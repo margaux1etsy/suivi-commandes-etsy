@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     chargerDonnees();
     
     // Vérifier si l'URL est configurée
-    if (CONFIG.API_URL === 'VOTRE_URL_GOOGLE_APPS_SCRIPT_ICI') {
+    if (CONFIG.API_URL === 'https://script.google.com/macros/s/AKfycbz6cxI2D8kpYTRpujuR3jXUeX6vdX2QrQllX4Bh0LHR9xHUCY753FfZ8nmT64rGhbPj/exec') {
         console.warn('⚠️ URL Google Apps Script non configurée');
     } else {
         document.getElementById('configBanner').style.display = 'none';
