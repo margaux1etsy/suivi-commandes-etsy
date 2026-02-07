@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Suivi Commandes Etsy</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-icon">📦</span>
+                <span class="logo-text">Suivi Commandes</span>
+            </div>
+            <div class="nav-links">
+                <button class="nav-btn active" data-page="dashboard">Tableau de bord</button>
+                <button class="nav-btn" data-page="nouvelle">Nouvelle commande</button>
+                <button class="nav-btn" data-page="commandes">Commandes</button>
+                <button class="nav-btn" data-page="boutiques">Boutiques</button>
+                <button class="nav-btn" data-page="aide">Aide au choix</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Message de configuration -->
+    <div class="config-banner" id="configBanner">
+        <div class="config-content">
+            <span class="config-icon">⚠️</span>
+            <span class="config-text">Configurez votre URL Google Apps Script dans le fichier config.js</span>
+            <button class="config-close" onclick="document.getElementById('configBanner').style.display='none'">✕</button>
+        </div>
+    </div>
+
+    <!-- Container principal -->
+    <div class="container">
+        
+        <!-- PAGE 1 : TABLEAU DE BORD -->
+        <div class="page active" id="page-dashboard">
+            <div class="page-header">
+                <h1 class="page-title">Tableau de bord</h1>
+                <p class="page-subtitle">Vue d'ensemble de votre activité</p>
+            </div>
+
+            <!-- Statistiques principales -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Commandes totales</div>
+                        <div class="stat-value" id="stat-total">0</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Chiffre d'affaires</div>
+                        <div class="stat-value" id="stat-ca">0 €</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📈</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Bénéfice total</div>
+                        <div class="stat-value" id="stat-benefice">0 €</div>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎯</div>
+                    <div class="stat-content">
+                        <div class="stat-label">Rentabilité moyenne</div>
+                        <div class="stat-value" id="stat-rentabilite">0%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Informations détaillées -->
+            <div class="details-grid">
+                <div class="detail-card">
+                    <h3 class="detail-title">🏆 Top produits</h3>
+                    <div id="top-produits" class="detail-list">
+                        <div class="empty-state">Aucune donnée disponible</div>
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <h3 class="detail-title">🌍 Ventes par pays</h3>
+                    <div id="top-pays" class="detail-list">
+                        <div class="empty-state">Aucune donnée disponible</div>
+                    </div>
+                </div>
+                <div class="detail-card">
+                    <h3 class="detail-title">🏪 Boutiques fiables</h3>
+                    <div id="top-boutiques" class="detail-list">
+                        <div class="empty-state">Aucune donnée disponible</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PAGE 2 : NOUVELLE COMMANDE -->
+        <div class="page" id="page-nouvelle">
+            <div class="page-header">
+                <h1 class="page-title">Nouvelle commande</h1>
+                <p class="page-subtitle">Enregistrer une nouvelle commande Etsy</p>
+            </div>
+
+            <form id="formCommande" class="form-commande">
+                <!-- Section Commande -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Informations commande</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="numeroCommande">Numéro de commande *</label>
+                            <input type="text" id="numeroCommande" required placeholder="Ex: #12345">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateCommande">Date commande *</label>
+                            <input type="date" id="dateCommande" required>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="nomProduit">Nom du produit *</label>
+                            <input type="text" id="nomProduit" required placeholder="Ex: Bracelet perles turquoise">
+                        </div>
+                        <div class="form-group">
+                            <label for="categorie">Catégorie</label>
+                            <input type="text" id="categorie" placeholder="Ex: Bijoux, Déco...">
+                        </div>
+                        <div class="form-group">
+                            <label for="statut">Statut</label>
+                            <select id="statut">
+                                <option value="en cours">En cours</option>
+                                <option value="envoyé">Envoyé</option>
+                                <option value="livré">Livré</option>
+                                <option value="retard">Retard</option>
+                                <option value="problème">Problème</option>
+                            </select>
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="notes">Notes personnelles</label>
+                            <textarea id="notes" rows="2" placeholder="Commentaires, remarques..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Client -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Informations client</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="nomClient">Nom du client *</label>
+                            <input type="text" id="nomClient" required placeholder="Ex: Marie Dupont">
+                        </div>
+                        <div class="form-group">
+                            <label for="paysClient">Pays *</label>
+                            <input type="text" id="paysClient" required placeholder="Ex: France">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="adresseClient">Adresse complète</label>
+                            <textarea id="adresseClient" rows="2" placeholder="Adresse, code postal, ville"></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Fournisseur -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Fournisseur AliExpress</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="boutiqueAliExpress">Nom boutique AliExpress *</label>
+                            <input type="text" id="boutiqueAliExpress" required placeholder="Ex: Store XYZ">
+                        </div>
+                        <div class="form-group">
+                            <label for="prixAchat">Prix d'achat (€) *</label>
+                            <input type="number" step="0.01" id="prixAchat" required placeholder="0.00">
+                        </div>
+                        <div class="form-group full-width">
+                            <label for="lienAliExpress">Lien article AliExpress</label>
+                            <input type="url" id="lienAliExpress" placeholder="https://...">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateAchatAliExpress">Date d'achat</label>
+                            <input type="date" id="dateAchatAliExpress">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Livraison -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Livraison</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="dateLivraisonEstimee">Date estimée</label>
+                            <input type="date" id="dateLivraisonEstimee">
+                        </div>
+                        <div class="form-group">
+                            <label for="dateLivraisonReelle">Date réelle</label>
+                            <input type="date" id="dateLivraisonReelle">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section Financier -->
+                <div class="form-section">
+                    <h3 class="form-section-title">Informations financières</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="prixVenteEtsy">Prix vente Etsy (€) *</label>
+                            <input type="number" step="0.01" id="prixVenteEtsy" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label>Bénéfice estimé</label>
+                            <div class="info-box" id="beneficePreview">Calculé automatiquement</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Boutons -->
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-secondary">Réinitialiser</button>
+                    <button type="submit" class="btn btn-primary">
+                        <span class="btn-text">Enregistrer la commande</span>
+                        <span class="btn-loader" style="display: none;">⏳ Envoi...</span>
+                    </button>
+                </div>
+            </form>
+
+            <!-- Message de confirmation -->
+            <div class="alert alert-success" id="successAlert" style="display: none;">
+                ✓ Commande enregistrée avec succès !
+            </div>
+            <div class="alert alert-error" id="errorAlert" style="display: none;">
+                ✕ Erreur lors de l'enregistrement
+            </div>
+        </div>
+
+        <!-- PAGE 3 : LISTE DES COMMANDES -->
+        <div class="page" id="page-commandes">
+            <div class="page-header">
+                <h1 class="page-title">Toutes les commandes</h1>
+                <p class="page-subtitle">Historique complet</p>
+            </div>
+
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>N° Commande</th>
+                            <th>Date</th>
+                            <th>Produit</th>
+                            <th>Client</th>
+                            <th>Pays</th>
+                            <th>Statut</th>
+                            <th>Boutique</th>
+                            <th>Prix vente</th>
+                            <th>Bénéfice</th>
+                        </tr>
+                    </thead>
+                    <tbody id="commandesTableBody">
+                        <tr>
+                            <td colspan="9" class="empty-state">Chargement des données...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- PAGE 4 : BOUTIQUES -->
+        <div class="page" id="page-boutiques">
+            <div class="page-header">
+                <h1 class="page-title">Boutiques AliExpress</h1>
+                <p class="page-subtitle">Analyse automatique de fiabilité</p>
+            </div>
+
+            <div id="boutiquesContainer" class="boutiques-grid">
+                <div class="empty-state">Chargement des boutiques...</div>
+            </div>
+        </div>
+
+        <!-- PAGE 5 : AIDE AU CHOIX -->
+        <div class="page" id="page-aide">
+            <div class="page-header">
+                <h1 class="page-title">Aide au choix fournisseur</h1>
+                <p class="page-subtitle">Trouvez le meilleur fournisseur par produit et pays</p>
+            </div>
+
+            <div class="aide-selector">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="selectProduit">Sélectionnez un produit</label>
+                        <select id="selectProduit">
+                            <option value="">-- Choisir --</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="selectPays">Sélectionnez un pays</label>
+                        <select id="selectPays">
+                            <option value="">-- Choisir --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div id="aideResultats" class="aide-resultats">
+                <div class="empty-state">Sélectionnez un produit et un pays pour voir les recommandations</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="config.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
